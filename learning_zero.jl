@@ -325,23 +325,22 @@ end
 # ╔═╡ efc93fb2-255e-4ef7-8606-1936c7a5f370
 """
     generate_example(img_height, img_width, nobjects::Tuple;
-                     μ=10,
-                     σ=0.5,
+                     μ=50, σ=0.5,
                      min_distance=0.7,
-                     noise_strength=0.02)
+                     noise_strength=0.02,
+                     shape=:gaussian,
+	                 scale=false))
 
-Generate an example image of height `img_height` and width `img_width` containing `nobjects[1]`
-objects on the left side and `nobjects[2]` objects on the right side. Each object is a gaussian
-blur of the form `exp(-spread*x^2)`, where `spread` is randomly drawn from `Normal(μ*n_objects,σ)`.
-Random noise of the form `randn(img_height, img_width)*noise_strength` is added to the image.
+Generate an example image of height `img_height` and width `img_width` containing 
+`nobjects[1]` objects on the left side and `nobjects[2]` objects on the right side.
+The shape of the object is determined by the `shape` keyword argument.
 """
 function generate_example(img_height, img_width, nobjects::Tuple;
                           μ=50, σ=0.5,
                           min_distance=0.7,
                           noise_strength=0.02,
                           shape=:gaussian,
-	                      scale=false
-)
+	                      scale=false)
     object_locations1 = generate_locations(abs(nobjects[1]); min_distance)
     object_locations2 = generate_locations(abs(nobjects[2]); min_distance)
 
@@ -363,12 +362,16 @@ function generate_example(img_height, img_width, nobjects::Tuple;
 end
 
 # ╔═╡ 1b56681e-c486-498e-bc34-040698b025b7
-let
-    example = generate_example(img_height, img_width, (blobs_left, blobs_right), shape=shape, scale=scale)
-	img = hcat(example[:, :, 1], ones(img_height, 1)*NaN, example[:, :, 2])
+begin
+	example = generate_example(img_height, img_width, (blobs_left, blobs_right),
+		                       shape=shape, scale=scale)
+    img = hcat(example[:, :, 1], ones(img_height, 1)*NaN, example[:, :, 2])
 
-	heatmap(img,  ratio=1)
+	heatmap(img, ratio=1)
 end
+
+# ╔═╡ 39c4bfff-5c1e-4d40-bceb-cfcee66805f8
+heatmap(img, ratio=1)
 
 # ╔═╡ cc5ad985-945d-4186-9ec8-7ce3f6c3ea1c
 function test_i_j(state, model, i, j; img_height=img_height, img_width=img_width)
@@ -388,7 +391,13 @@ function test_i_j(state, model, i, j; img_height=img_height, img_width=img_width
 end
 
 # ╔═╡ cab297cb-ee7a-4413-a545-4c1293ef72d8
-function generate_batch(batch_size, img_height, img_width; object_size=50.0)
+"""
+	generate_batch(batch_size, img_height, img_width)
+
+Generate `batch_size` examples with images of size `img_height`×`img_width` along
+with their (onehot encoded) labels.
+"""
+function generate_batch(batch_size, img_height, img_width)
 	nobjects_range = 1:5
 	labels = Array{Int}(undef, batch_size)
 	data = Array{Float32}(undef, img_height, img_width, 2, batch_size)
@@ -566,6 +575,9 @@ let
 	</b>
 	""")
 end
+
+# ╔═╡ 6f51041b-74f9-4beb-aab8-670ec38ca425
+plot()
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -2478,11 +2490,12 @@ version = "1.4.1+1"
 # ╠═5fbeb830-4265-44fc-a2f0-814dfc6728e0
 # ╟─efc39144-ea2a-4e0a-800f-8b6e72868ccf
 # ╠═1b56681e-c486-498e-bc34-040698b025b7
+# ╟─39c4bfff-5c1e-4d40-bceb-cfcee66805f8
 # ╟─6b560bcb-8dc5-4386-beb8-588a73572cc1
 # ╟─a7eebcab-29bb-4f09-84b9-cb60f23d936d
 # ╠═bcb32bfe-1bd5-4c89-b08f-527f23906bc9
 # ╟─045ac160-430a-4564-b8ed-aefbcf644b07
-# ╠═0898c0b2-4b2b-4b7d-bb61-27c5fba67708
+# ╟─0898c0b2-4b2b-4b7d-bb61-27c5fba67708
 # ╠═8a3125f0-90d8-426f-876f-07e28492d1bf
 # ╠═7c165cbd-b21b-4150-ad2e-9aedd5629f48
 # ╟─f56ea23e-8af6-4777-b717-e1d13cd91c8a
@@ -2500,7 +2513,7 @@ version = "1.4.1+1"
 # ╠═cf23ff89-bf31-4b41-ad2e-d82b149df17f
 # ╠═0622c381-faba-4c60-a556-78d0c90cbc64
 # ╠═0c90e26c-e00d-44b1-b692-cde77c294302
-# ╠═015ad06d-0b40-421d-88f0-0b4204faa7d8
+# ╟─015ad06d-0b40-421d-88f0-0b4204faa7d8
 # ╠═2eff527d-897d-4606-874f-7b5e645e4c23
 # ╟─5b1fad09-ae8b-4a10-b985-6fb054c2fc78
 # ╟─a03d9cf7-7812-449a-a2ea-f76d15e0ce7b
@@ -2516,5 +2529,6 @@ version = "1.4.1+1"
 # ╠═efc93fb2-255e-4ef7-8606-1936c7a5f370
 # ╠═12b07d79-f13a-42a9-8dc4-12422d760a7e
 # ╠═07ca44b6-d8b8-463b-8374-e28af9a50738
+# ╠═6f51041b-74f9-4beb-aab8-670ec38ca425
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
