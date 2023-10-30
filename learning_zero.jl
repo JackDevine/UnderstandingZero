@@ -35,11 +35,31 @@ end
 md"""
 # Understanding zero with deep learning
 
+## Background
+Experiments have been conducted where an animal is presented with two cards and has to choose the card with the smallest number of blobs. Once the animal understands the task, it is presented with two cards where one of the cards has zero blobs. Since the animal has not been shown a zero blob card, it has to use numerical intuition to choose which card has less blobs.
 
+Experiments have shown that animals do have the numerical intuition to understand that zero is less than one:
+
+* [https://science.sciencemag.org/content/334/6063/1664.abstract](https://science.sciencemag.org/content/334/6063/1664.abstract)
+* [https://www.ncbi.nlm.nih.gov/pubmed/27666660](https://www.ncbi.nlm.nih.gov/pubmed/27666660)
+* [https://www.researchgate.net/publication/325684091_Numerical_ordering_of_zero_in_honey_bees](https://www.researchgate.net/publication/325684091_Numerical_ordering_of_zero_in_honey_bees)
+
+The simplest animal capable of understanding that zero is less than one is a honeybee.
+
+## Results
+In this notebook, I train a neural network to predict which of two images has less blobs. Then I give the network a scenario where one image has zero blobs. If the neural network is well trained, then it will correctly identify that zero is less than one.
+
+## Reflections
+Thinking about the training process and results broadened my perspective on what "training a neural network" means. The samples where one image has zero blobs come from a very different distribution than the training distribution. However, the model is able to make the correct prediction. Training the neural network on data gives it numerical intuition. Even though the models task is to label data, it has obtained the ability to understand numbers. 
 """
 
 # ╔═╡ f60e0e23-e304-4fa7-813d-c9be87e33f9e
 TableOfContents()
+
+# ╔═╡ c266f191-408a-4c7d-b094-69318eadb8d9
+md"""
+# Choose the image height and width
+"""
 
 # ╔═╡ 027a9c72-0e28-41de-88b8-68b717813383
 begin
@@ -53,18 +73,18 @@ md"""
 
 You can create samples of the data that the model will be trained on.
 
-The code below uses `generate_example`, `generate_batch`, `generate_locations`, `get_title` and `plot_batch`. Control click on the links below to see the documentation and definitions of these functions.
+The code below uses `generate_example`, `generate_batch`, `generate_locations`, `get_title` and `plot_first_example`. Control click on the links below to see the documentation and definitions of these functions.
 """
 
 # ╔═╡ efc39144-ea2a-4e0a-800f-8b6e72868ccf
 md"""
-Blobs left: $(@bind blobs_left NumberField(0:10))
+Blobs left: $(@bind blobs_left NumberField(0:10, default=1))
 
-Blobs right: $(@bind blobs_right NumberField(0:10))
+Blobs right: $(@bind blobs_right NumberField(0:10, default=3))
 
 Shape: $(@bind shape Select([:square, :gaussian]))
 
-Scale: $(@bind scale Select([true, false]))
+Scale: $(@bind scale Select([false, true]))
 """
 
 # ╔═╡ 6b560bcb-8dc5-4386-beb8-588a73572cc1
@@ -84,7 +104,8 @@ Each batch is a 2 tuple where the first element is the data and the second is th
 
 The data is a `img_height`×`img_width`× 2 ×`batch_size` array. Lux will use the last dimension as the batch dimension and each sample will be a `img_height`×`img_width` with two channels. The first channel is the left image and the second channel is the right image.
 
-The labels are 3 × `batch_size` one hot matrices. If:
+The labels are 3 × `batch_size` one hot matrices.
+
 * first row == 1 => more blobs in the left image
 * second row == 1 => same number of blobs in both images
 * third row == 1 => more blobs in the right image
@@ -92,7 +113,7 @@ The labels are 3 × `batch_size` one hot matrices. If:
 
 # ╔═╡ 0898c0b2-4b2b-4b7d-bb61-27c5fba67708
 md"""
-Example batch size: $(@bind example_batch_size NumberField(2:2:20))
+Example batch size: $(@bind example_batch_size NumberField(2:2:20, default=6))
 """
 
 # ╔═╡ 20bea86c-3c47-40d3-891d-1164aad54285
@@ -123,6 +144,11 @@ model = Chain(
 	# Softmax to get probabilities
 	softmax,
 )
+
+# ╔═╡ c2c9439d-9adb-40b3-8482-2911a182e898
+md"""
+## Crossentropy loss
+"""
 
 # ╔═╡ 3f8bdd08-dccb-4a79-ba28-27bf0a209385
 function loss(model, ps, st, data)
@@ -198,21 +224,37 @@ rng = MersenneTwister()
 
 # ╔═╡ 015ad06d-0b40-421d-88f0-0b4204faa7d8
 md"""
-## Evaluate model
+# Evaluate model
+
+The figure below shows the accuracy of the model given the number of blobs in the left/right images. Since there are three classes and the classes are balanced in the training set, random guessing would give you an accuracy of 1/3, which the model exceeds.
+
+The first column and the last row of the heatmap below are cases where the model was presented with a image with zero blobs. The fact that the model does better than 1/3 in these cases indicates that it understands zero.
+"""
+
+# ╔═╡ 5b1fad09-ae8b-4a10-b985-6fb054c2fc78
+md"""
+## Make predictions with the model
+Pressing the button below will generate a sample from the training distribution and predict which side has more blobs. The prediction is compared to the true label and the status of the model prediction is shown.
 """
 
 # ╔═╡ a03d9cf7-7812-449a-a2ea-f76d15e0ce7b
 @bind go Button("Generate a sample from the training distribution and compare to model prediction")
 
+# ╔═╡ 553ce5e1-6d21-4cc5-a624-664c2d365035
+md"""
+## Choose your own adventure
+Use the input fields to choose the characteristics of the input data and see how the model performs.
+"""
+
 # ╔═╡ e682454f-54fd-4faf-8268-869914f1ec8f
 md"""
-Blobs left: $(@bind blobs_left_ NumberField(0:10))
+Blobs left: $(@bind blobs_left_ NumberField(0:10, default=0))
 
-Blobs right: $(@bind blobs_right_ NumberField(0:10))
+Blobs right: $(@bind blobs_right_ NumberField(0:10, default=3))
 
 Shape: $(@bind shape_ Select([:square, :gaussian]))
 
-Scale: $(@bind scale_ Select([true, false]))
+Scale: $(@bind scale_ Select([false, true]))
 
 $(@bind go_ Button("Generate another example"))
 """
@@ -441,9 +483,6 @@ function get_title(label)
 	end
 end
 
-# ╔═╡ 5fbeb830-4265-44fc-a2f0-814dfc6728e0
-generate_example, generate_batch, generate_locations, get_title, plot_batch
-
 # ╔═╡ a240ddb8-7b7e-4cb9-a58b-837ea7232afb
 let
 	go_
@@ -492,6 +531,9 @@ function plot_first_example(batch; show_all=true)
 		p1
 	end
 end
+
+# ╔═╡ 5fbeb830-4265-44fc-a2f0-814dfc6728e0
+generate_example, generate_batch, generate_locations, get_title, plot_first_example
 
 # ╔═╡ bcb32bfe-1bd5-4c89-b08f-527f23906bc9
 let
@@ -2427,9 +2469,10 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╠═730e3bd1-47af-4588-b5bd-a7c5212d7a07
+# ╟─730e3bd1-47af-4588-b5bd-a7c5212d7a07
 # ╟─f60e0e23-e304-4fa7-813d-c9be87e33f9e
 # ╠═aab65a5a-7633-11ee-22b9-0fd54ecd9118
+# ╟─c266f191-408a-4c7d-b094-69318eadb8d9
 # ╠═027a9c72-0e28-41de-88b8-68b717813383
 # ╟─bf6f23c9-6062-4017-ad17-e1f3527881e6
 # ╠═5fbeb830-4265-44fc-a2f0-814dfc6728e0
@@ -2439,27 +2482,30 @@ version = "1.4.1+1"
 # ╟─a7eebcab-29bb-4f09-84b9-cb60f23d936d
 # ╠═bcb32bfe-1bd5-4c89-b08f-527f23906bc9
 # ╟─045ac160-430a-4564-b8ed-aefbcf644b07
-# ╟─0898c0b2-4b2b-4b7d-bb61-27c5fba67708
+# ╠═0898c0b2-4b2b-4b7d-bb61-27c5fba67708
 # ╠═8a3125f0-90d8-426f-876f-07e28492d1bf
 # ╠═7c165cbd-b21b-4150-ad2e-9aedd5629f48
-# ╠═f56ea23e-8af6-4777-b717-e1d13cd91c8a
-# ╠═20bea86c-3c47-40d3-891d-1164aad54285
+# ╟─f56ea23e-8af6-4777-b717-e1d13cd91c8a
+# ╟─20bea86c-3c47-40d3-891d-1164aad54285
 # ╠═af10bdf8-1193-4fb3-8154-859025ed79e5
+# ╟─c2c9439d-9adb-40b3-8482-2911a182e898
 # ╠═3f8bdd08-dccb-4a79-ba28-27bf0a209385
 # ╠═6d2d0dde-cb24-41d0-a7e5-3dd3e462d6b0
-# ╠═7cef11de-5616-4d4e-b760-2aa1da00be5b
+# ╟─7cef11de-5616-4d4e-b760-2aa1da00be5b
 # ╠═fda7447b-7915-4027-ae28-592476124b42
-# ╠═f88e7b88-8730-4d9f-bee6-4594d045135e
+# ╟─f88e7b88-8730-4d9f-bee6-4594d045135e
 # ╠═06975abb-a62b-42a3-bf9f-199d52f33453
-# ╠═9a959062-2eea-4d3b-a4be-4f99c6668deb
+# ╟─9a959062-2eea-4d3b-a4be-4f99c6668deb
 # ╠═a6918b7b-1f91-43dc-8826-59cefa3ad706
 # ╠═cf23ff89-bf31-4b41-ad2e-d82b149df17f
 # ╠═0622c381-faba-4c60-a556-78d0c90cbc64
 # ╠═0c90e26c-e00d-44b1-b692-cde77c294302
 # ╠═015ad06d-0b40-421d-88f0-0b4204faa7d8
 # ╠═2eff527d-897d-4606-874f-7b5e645e4c23
+# ╟─5b1fad09-ae8b-4a10-b985-6fb054c2fc78
 # ╟─a03d9cf7-7812-449a-a2ea-f76d15e0ce7b
 # ╠═01e8c15b-ada6-4747-920f-47a11117248a
+# ╟─553ce5e1-6d21-4cc5-a624-664c2d365035
 # ╟─e682454f-54fd-4faf-8268-869914f1ec8f
 # ╠═a240ddb8-7b7e-4cb9-a58b-837ea7232afb
 # ╠═250fd052-a5fb-4c17-b6b9-dea0b53f6243
