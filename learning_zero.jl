@@ -171,7 +171,7 @@ md"""
 
 # ╔═╡ fda7447b-7915-4027-ae28-592476124b42
 function train_model(model, opt, train_data, test_data, nepoch)
-	rng = MersenneTwister()
+	rng = MersenneTwister(42)
 	tstate = Lux.Training.TrainState(rng, model, opt)
 	vjp_rule = Lux.Training.AutoZygote()
 	
