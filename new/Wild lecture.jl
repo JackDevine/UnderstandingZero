@@ -23,9 +23,11 @@ plot(randn(50))
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 Plots = "~1.39.0"
+PlutoUI = "~0.7.54"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -34,7 +36,13 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.4"
 manifest_format = "2.0"
-project_hash = "bacb5e85b3a6ee88193a36efc3b98cb30f016166"
+project_hash = "02f72d620be4ad5a8949575390a88130e9d74397"
+
+[[deps.AbstractPlutoDingetjes]]
+deps = ["Pkg"]
+git-tree-sha1 = "793501dcd3fa7ce8d375a2c878dca2296232686e"
+uuid = "6e696c72-6542-2067-7265-42206c756150"
+version = "1.2.2"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -273,6 +281,24 @@ git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+1"
 
+[[deps.Hyperscript]]
+deps = ["Test"]
+git-tree-sha1 = "8d511d5b81240fc8e6802386302675bdf47737b9"
+uuid = "47d2ed2b-36de-50cf-bf87-49c2cf4b8b91"
+version = "0.0.4"
+
+[[deps.HypertextLiteral]]
+deps = ["Tricks"]
+git-tree-sha1 = "7134810b1afce04bbc1045ca1985fbe81ce17653"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.5"
+
+[[deps.IOCapture]]
+deps = ["Logging", "Random"]
+git-tree-sha1 = "d75853a0bdbfb1ac815478bacd89cd27b550ace6"
+uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
+version = "0.2.3"
+
 [[deps.InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -448,6 +474,11 @@ git-tree-sha1 = "c1dd6d7978c12545b4179fb6153b9250c96b0075"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.3"
 
+[[deps.MIMEs]]
+git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
+uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
+version = "0.1.4"
+
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
 git-tree-sha1 = "9ee1618cbf5240e6d4e0371d6f24065083f60c48"
@@ -595,6 +626,12 @@ version = "1.39.0"
     ImageInTerminal = "d8c32880-2388-543b-8c61-d9f865259254"
     Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
+[[deps.PlutoUI]]
+deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
+git-tree-sha1 = "bd7c69c7f7173097e7b5e1be07cee2b8b7447f51"
+uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+version = "0.7.54"
+
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
 git-tree-sha1 = "03b4c25b43cb84cee5c90aa9b5ea0a78fd848d2f"
@@ -741,6 +778,11 @@ weakdeps = ["Random", "Test"]
 
     [deps.TranscodingStreams.extensions]
     TestExt = ["Test", "Random"]
+
+[[deps.Tricks]]
+git-tree-sha1 = "eae1bb484cd63b36999ee58be2de6c178105112f"
+uuid = "410a4b4d-49e4-4fbc-ab6d-cb71b17b3775"
+version = "0.1.8"
 
 [[deps.URIs]]
 git-tree-sha1 = "67db6cc7b3821e19ebe75791a9dd19c9b1188f2b"
