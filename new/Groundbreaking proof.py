@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ╔═╡ 7f6cfda2-72e8-4249-a543-fcfb8cf8e504
-randn(4, 5)
+plt.plot(np.random.randn(5, 5))
 
 # ╔═╡ 45353cfe-5d02-4f48-b831-120d8ed26f1b
 np.random.randn(5, 5)
