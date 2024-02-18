@@ -17,7 +17,7 @@ begin
 end
 
 # ╔═╡ f50d6e28-e07b-4fab-9605-75424ef9d201
-plot(randn(50))
+plot(randn(5))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
