@@ -3,6 +3,9 @@
 # Welcome to your Python reactive notebook.# ╔═╡ b1a65c82-ce0f-11ee-3083-d3eaad37f2e6
 2+2
 
+# ╔═╡ 99cd4ec5-7c48-418d-9612-5ab515881c77
+
+
 # ╔═╡ a6eb2469-a16e-4717-ba28-d2e4727eefee
 import numpy as np
 
@@ -346,6 +349,7 @@ juliacall = ""
 
 # ╔═╡ Cell order:
 # ╠═b1a65c82-ce0f-11ee-3083-d3eaad37f2e6
+# ╠═99cd4ec5-7c48-418d-9612-5ab515881c77
 # ╠═a6eb2469-a16e-4717-ba28-d2e4727eefee
 # ╠═7f6cfda2-72e8-4249-a543-fcfb8cf8e504
 # ╠═45353cfe-5d02-4f48-b831-120d8ed26f1b
