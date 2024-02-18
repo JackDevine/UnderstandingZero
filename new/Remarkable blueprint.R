@@ -7,7 +7,7 @@ ggplot(mpg, aes(displ, hwy, colour = class)) +
   geom_point()
 
 # ╔═╡ 5f486a35-5e7b-4766-b551-e9d50167c334
-
+geom_point()
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 '
