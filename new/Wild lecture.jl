@@ -7,7 +7,7 @@ using InteractiveUtils
 # ╔═╡ 35e504df-05d0-46b9-ab18-803c93ac5b17
 using Plots
 
-# ╔═╡ 6929906c-ec11-454f-b1da-2c2def56ac6c
+# ╔═╡ ec049982-6e75-4dff-ad36-16f433b7b34d
 using PlutoUI
 
 # ╔═╡ ad9da0a0-ce0f-11ee-1c3d-e39d4c5e2380
@@ -19,8 +19,8 @@ end
 # ╔═╡ f50d6e28-e07b-4fab-9605-75424ef9d201
 plot(randn(5))
 
-# ╔═╡ ec049982-6e75-4dff-ad36-16f433b7b34d
-randn(50, 50)
+# ╔═╡ 661af131-ac77-4e5c-8b69-276630c56c45
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1130,7 +1130,7 @@ PLUTO_CONDAPKG_TOML_CONTENTS = """
 # ╠═35e504df-05d0-46b9-ab18-803c93ac5b17
 # ╠═f50d6e28-e07b-4fab-9605-75424ef9d201
 # ╠═ec049982-6e75-4dff-ad36-16f433b7b34d
-# ╠═6929906c-ec11-454f-b1da-2c2def56ac6c
+# ╠═661af131-ac77-4e5c-8b69-276630c56c45
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
 # ╟─00000000-0000-0000-0000-000000000003
