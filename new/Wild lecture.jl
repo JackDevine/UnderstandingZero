@@ -4,6 +4,16 @@
 using Markdown
 using InteractiveUtils
 
+# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
+macro bind(def, element)
+    quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
+        local el = $(esc(element))
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
+        el
+    end
+end
+
 # ╔═╡ 35e504df-05d0-46b9-ab18-803c93ac5b17
 using Plots
 
@@ -20,7 +30,10 @@ end
 plot(randn(5))
 
 # ╔═╡ 661af131-ac77-4e5c-8b69-276630c56c45
+@bind x Slider(LinRange(-10, 10, 1000))
 
+# ╔═╡ 081650ec-2a6b-42c3-8072-055d42f45543
+x
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1131,6 +1144,7 @@ PLUTO_CONDAPKG_TOML_CONTENTS = """
 # ╠═f50d6e28-e07b-4fab-9605-75424ef9d201
 # ╠═ec049982-6e75-4dff-ad36-16f433b7b34d
 # ╠═661af131-ac77-4e5c-8b69-276630c56c45
+# ╠═081650ec-2a6b-42c3-8072-055d42f45543
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
 # ╟─00000000-0000-0000-0000-000000000003
