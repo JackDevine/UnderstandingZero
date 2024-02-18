@@ -11,6 +11,11 @@ import numpy as np
 
 # ╔═╡ 7f6cfda2-72e8-4249-a543-fcfb8cf8e504
 plt.plot(np.random.randn(5, 5))
+plt.show()
+
+# ╔═╡ 0f1b92ff-e1f7-4d49-a811-291af95d1312
+3+3
+3
 
 # ╔═╡ 45353cfe-5d02-4f48-b831-120d8ed26f1b
 np.random.randn(5, 5)
@@ -353,6 +358,7 @@ juliacall = ""
 # ╠═99cd4ec5-7c48-418d-9612-5ab515881c77
 # ╠═a6eb2469-a16e-4717-ba28-d2e4727eefee
 # ╠═7f6cfda2-72e8-4249-a543-fcfb8cf8e504
+# ╠═0f1b92ff-e1f7-4d49-a811-291af95d1312
 # ╠═45353cfe-5d02-4f48-b831-120d8ed26f1b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
