@@ -7,7 +7,10 @@
 c(1, 2, 3, 5) + 3
 
 # ╔═╡ e2c580f6-8f89-4a83-b67a-2257b6ae32f6
+library(ggplot2)
 
+ggplot(mpg, aes(displ, hwy, colour = class)) + 
+  geom_point()
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 '
@@ -589,6 +592,8 @@ PLUTO_CONDAPKG_TOML_CONTENTS = """
 channels = ["conda-forge", "file:///home/jolin_user/.conda/channel"]
 
 [deps]
+r-ggplot = ""
+r-ggplot2 = ""
 r = ""
 r-base = ""
 r-juliacall = ""
