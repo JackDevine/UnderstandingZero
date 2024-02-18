@@ -10,7 +10,7 @@ import numpy as np
 randn(4, 5)
 
 # ╔═╡ 45353cfe-5d02-4f48-b831-120d8ed26f1b
-
+np.random.randn(5, 5)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
