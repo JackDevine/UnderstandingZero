@@ -4,7 +4,7 @@
 2+2
 
 # ╔═╡ 99cd4ec5-7c48-418d-9612-5ab515881c77
-import maptplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 # ╔═╡ a6eb2469-a16e-4717-ba28-d2e4727eefee
 import numpy as np
@@ -340,9 +340,9 @@ version = "17.4.0+0"
 # ╔═╡ 00000000-0000-0000-0000-000000000003
 PLUTO_CONDAPKG_TOML_CONTENTS = """
 [deps]
+matplotlib = ""
 dill = ""
 numpy = ""
-maptplotlib = ""
 
 [pip.deps]
 juliacall = ""
