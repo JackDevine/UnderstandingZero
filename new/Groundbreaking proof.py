@@ -4,7 +4,13 @@
 2+2
 
 # ╔═╡ a6eb2469-a16e-4717-ba28-d2e4727eefee
-print(2)
+import numpy as np
+
+# ╔═╡ 7f6cfda2-72e8-4249-a543-fcfb8cf8e504
+randn(4, 5)
+
+# ╔═╡ 45353cfe-5d02-4f48-b831-120d8ed26f1b
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -332,6 +338,7 @@ version = "17.4.0+0"
 PLUTO_CONDAPKG_TOML_CONTENTS = """
 [deps]
 dill = ""
+numpy = ""
 
 [pip.deps]
 juliacall = ""
@@ -340,6 +347,8 @@ juliacall = ""
 # ╔═╡ Cell order:
 # ╠═b1a65c82-ce0f-11ee-3083-d3eaad37f2e6
 # ╠═a6eb2469-a16e-4717-ba28-d2e4727eefee
+# ╠═7f6cfda2-72e8-4249-a543-fcfb8cf8e504
+# ╠═45353cfe-5d02-4f48-b831-120d8ed26f1b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
 # ╟─00000000-0000-0000-0000-000000000003
