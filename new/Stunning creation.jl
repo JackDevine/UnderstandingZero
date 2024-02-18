@@ -21,7 +21,7 @@ using PlutoUI
 @bind n Slider(1:10_000)
 
 # ╔═╡ 5bf7c252-ce29-11ee-1a27-f501fc9476e5
-sum(1/i^2 for i in 1:n) - π^2/6
+@time sum(1/i^2 for i in 1:n) - π^2/6
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
