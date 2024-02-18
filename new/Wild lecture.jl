@@ -5,7 +5,10 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ ad9da0a0-ce0f-11ee-1c3d-e39d4c5e2380
-randn(50, 50)
+begin
+	randn(50, 50)
+	3
+end
 
 # ╔═╡ Cell order:
 # ╠═ad9da0a0-ce0f-11ee-1c3d-e39d4c5e2380
