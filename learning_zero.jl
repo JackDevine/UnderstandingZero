@@ -87,18 +87,6 @@ Shape: $(@bind shape Select([:square, :gaussian]))
 Scale: $(@bind scale Select([false, true]))
 """
 
-# ╔═╡ 1b56681e-c486-498e-bc34-040698b025b7
-begin
-	example = generate_example(img_height, img_width, (blobs_left, blobs_right),
-		                       shape=shape, scale=scale)
-    img = hcat(example[:, :, 1], ones(img_height, 1)*NaN, example[:, :, 2])
-
-	heatmap(img, ratio=1)
-end
-
-# ╔═╡ 39c4bfff-5c1e-4d40-bceb-cfcee66805f8
-heatmap(img, ratio=1)
-
 # ╔═╡ 6b560bcb-8dc5-4386-beb8-588a73572cc1
 md"""
 # Use the `generate_batch` function
@@ -127,18 +115,6 @@ The labels are 3 × `batch_size` one hot matrices.
 md"""
 Example batch size: $(@bind example_batch_size NumberField(2:2:20, default=6))
 """
-
-# ╔═╡ f56ea23e-8af6-4777-b717-e1d13cd91c8a
-begin
-    example_batch = generate_batch(example_batch_size, img_width, img_height)
-	nothing
-end
-
-# ╔═╡ 8a3125f0-90d8-426f-876f-07e28492d1bf
-example_batch[1]
-
-# ╔═╡ 7c165cbd-b21b-4150-ad2e-9aedd5629f48
-example_batch[2]
 
 # ╔═╡ 20bea86c-3c47-40d3-891d-1164aad54285
 md"""
@@ -235,17 +211,6 @@ md"""
 ## Generate train/test data
 """
 
-# ╔═╡ 06975abb-a62b-42a3-bf9f-199d52f33453
-begin
-	batch_size = 64
-	nbatch_train = 15
-	
-	ntest = 200
-	train_data = [generate_batch(batch_size, img_height, img_width)
-		          for _ in 1:nbatch_train]
-	test_data = generate_batch(ntest, img_height, img_width)
-end
-
 # ╔═╡ 9a959062-2eea-4d3b-a4be-4f99c6668deb
 md"""
 ## Select training parameters
@@ -256,28 +221,6 @@ opt = Optimisers.Adam(1f-3)
 
 # ╔═╡ cf23ff89-bf31-4b41-ad2e-d82b149df17f
 rng = MersenneTwister()
-
-# ╔═╡ 0622c381-faba-4c60-a556-78d0c90cbc64
-begin
-	nepoch = 60
-	trained_state, test_accuracy, batch_loss_list =
-		train_model(model, opt, train_data, test_data, nepoch)
-end
-
-# ╔═╡ 0c90e26c-e00d-44b1-b692-cde77c294302
-let
-	p1 = plot(test_accuracy,
-			xlabel="Epoch",
-			ylabel="Test accuracy",
-			legend=false
-	)
-	p2 = plot(batch_loss_list,
-			xlabel="Epoch",
-			ylabel="Training loss",
-			legend=false
-	)
-	plot(p1, p2, layout=(2, 1))
-end
 
 # ╔═╡ 015ad06d-0b40-421d-88f0-0b4204faa7d8
 md"""
@@ -316,67 +259,10 @@ Scale: $(@bind scale_ Select([false, true]))
 $(@bind go_ Button("Generate another example"))
 """
 
-# ╔═╡ a240ddb8-7b7e-4cb9-a58b-837ea7232afb
-let
-	go_
-    sample = generate_example(img_height, img_width,
-		                      (blobs_left_, blobs_right_),
-		                       shape=shape_, scale=scale_)
-	img = hcat(sample[:, :, 1], ones(img_height, 1)*NaN, sample[:, :, 2])
-
-	prediction = Lux.apply(trained_state.model,
-		                   reshape(sample, (img_height, img_width, 2, 1)),
-		                   trained_state.parameters, trained_state.states)[1]
-
-	model_label = onecold(prediction, [-1 0 1])[1]
-	
-	p = heatmap(img,  ratio=1)
-
-	data_label = sign(blobs_right_ - blobs_left_)
-	is_correct = model_label == data_label
-	text_color = is_correct ? "green" : "red"
-	@htl("""
-	$(p)
-	<br>
-	<b style="color:$(text_color);font-size:2.1em">
-	Model $(is_correct ? "correctly" : "incorrectly") predicts "$(get_title(model_label) |> lowercase)"
-	</b>
-	""")
-end
-
 # ╔═╡ 250fd052-a5fb-4c17-b6b9-dea0b53f6243
 md"""
 # Appendix (helper functions)
 """
-
-# ╔═╡ cc5ad985-945d-4186-9ec8-7ce3f6c3ea1c
-function test_i_j(state, model, i, j; img_height=img_height, img_width=img_width)
-	img = reshape(
-		generate_example(img_height, img_width,
-			(i, j);
-			scale=rand([true, false]),
-			shape=rand([:square, :gaussian, :circle])
-		),
-		(img_height, img_width, 2, 1)
-	)
-
-	model_result = Lux.apply(model, img, state.parameters, state.states)[1]
-	label = onecold(model_result, [-1 0 1])[1]
-
-	label == sign(j - i)
-end
-
-# ╔═╡ 2eff527d-897d-4606-874f-7b5e645e4c23
-begin
-	test_range = 0:5
-	niters = 20
-
-	accuracy_matrix = [mean(test_i_j(trained_state, model, i, j) for _ in 1:niters)
-		               for i in test_range, j in test_range]
-	p1 = heatmap(test_range, test_range, accuracy_matrix, colorbar_title="Accuracy")
-	xaxis!("# blobs left")
-	yaxis!("# blobs right")
-end
 
 # ╔═╡ 706be74a-e527-418d-8a2f-532af2fe27d5
 """
@@ -436,40 +322,6 @@ function add_blobs!(img, xx, yy, shape, object_locations, object_size, scale)
 	img
 end
 
-# ╔═╡ cab297cb-ee7a-4413-a545-4c1293ef72d8
-"""
-	generate_batch(batch_size, img_height, img_width)
-
-Generate `batch_size` examples with images of size `img_height`×`img_width` along
-with their (onehot encoded) labels.
-"""
-function generate_batch(batch_size, img_height, img_width)
-	nobjects_range = 1:5
-	labels = Array{Int}(undef, batch_size)
-	data = Array{Float32}(undef, img_height, img_width, 2, batch_size)
-	for i in 1:2:batch_size
-	    nobjects = rand(nobjects_range, 2)
-	    # Rebalance the training set so that there is approximately the same number
-		# of examples with equal as blobs as unequal blob examples.
-	    rand() <= 0.2 && (nobjects[1] = nobjects[2])
-	    labels[i] = nobjects[1] > nobjects[2] ? -1 :
-		            nobjects[1] == nobjects[2] ? 0 : 1
-
-		data[:, :, :, i] .= generate_example(img_height, img_width,
-			(nobjects[1], nobjects[2]);
-			scale=rand([true, false]),
-			shape=rand([:square, :gaussian])
-		)
-
-	    # Generate another example where the images flip sides.
-	    labels[i + 1] = nobjects[2] > nobjects[1] ? -1 :
-		                nobjects[1] == nobjects[2] ? 0 : 1
-	    data[:, :, :, i + 1] .= reverse(data[:, :, :, i], dims=3)
-	end
-
-	data, onehotbatch(labels, [-1 0 1])
-end
-
 # ╔═╡ efc93fb2-255e-4ef7-8606-1936c7a5f370
 """
     generate_example(img_height, img_width, nobjects::Tuple;
@@ -509,6 +361,126 @@ function generate_example(img_height, img_width, nobjects::Tuple;
     ret
 end
 
+# ╔═╡ 1b56681e-c486-498e-bc34-040698b025b7
+begin
+	example = generate_example(img_height, img_width, (blobs_left, blobs_right),
+		                       shape=shape, scale=scale)
+    img = hcat(example[:, :, 1], ones(img_height, 1)*NaN, example[:, :, 2])
+
+	heatmap(img, ratio=1)
+end
+
+# ╔═╡ 39c4bfff-5c1e-4d40-bceb-cfcee66805f8
+heatmap(img, ratio=1)
+
+# ╔═╡ cc5ad985-945d-4186-9ec8-7ce3f6c3ea1c
+function test_i_j(state, model, i, j; img_height=img_height, img_width=img_width)
+	img = reshape(
+		generate_example(img_height, img_width,
+			(i, j);
+			scale=rand([true, false]),
+			shape=rand([:square, :gaussian, :circle])
+		),
+		(img_height, img_width, 2, 1)
+	)
+
+	model_result = Lux.apply(model, img, state.parameters, state.states)[1]
+	label = onecold(model_result, [-1 0 1])[1]
+
+	label == sign(j - i)
+end
+
+# ╔═╡ cab297cb-ee7a-4413-a545-4c1293ef72d8
+"""
+	generate_batch(batch_size, img_height, img_width)
+
+Generate `batch_size` examples with images of size `img_height`×`img_width` along
+with their (onehot encoded) labels.
+"""
+function generate_batch(batch_size, img_height, img_width)
+	nobjects_range = 1:5
+	labels = Array{Int}(undef, batch_size)
+	data = Array{Float32}(undef, img_height, img_width, 2, batch_size)
+	for i in 1:2:batch_size
+	    nobjects = rand(nobjects_range, 2)
+	    # Rebalance the training set so that there is approximately the same number
+		# of examples with equal as blobs as unequal blob examples.
+	    rand() <= 0.2 && (nobjects[1] = nobjects[2])
+	    labels[i] = nobjects[1] > nobjects[2] ? -1 :
+		            nobjects[1] == nobjects[2] ? 0 : 1
+
+		data[:, :, :, i] .= generate_example(img_height, img_width,
+			(nobjects[1], nobjects[2]);
+			scale=rand([true, false]),
+			shape=rand([:square, :gaussian])
+		)
+
+	    # Generate another example where the images flip sides.
+	    labels[i + 1] = nobjects[2] > nobjects[1] ? -1 :
+		                nobjects[1] == nobjects[2] ? 0 : 1
+	    data[:, :, :, i + 1] .= reverse(data[:, :, :, i], dims=3)
+	end
+
+	data, onehotbatch(labels, [-1 0 1])
+end
+
+# ╔═╡ f56ea23e-8af6-4777-b717-e1d13cd91c8a
+begin
+    example_batch = generate_batch(example_batch_size, img_width, img_height)
+	nothing
+end
+
+# ╔═╡ 8a3125f0-90d8-426f-876f-07e28492d1bf
+example_batch[1]
+
+# ╔═╡ 7c165cbd-b21b-4150-ad2e-9aedd5629f48
+example_batch[2]
+
+# ╔═╡ 06975abb-a62b-42a3-bf9f-199d52f33453
+begin
+	batch_size = 64
+	nbatch_train = 15
+	
+	ntest = 200
+	train_data = [generate_batch(batch_size, img_height, img_width)
+		          for _ in 1:nbatch_train]
+	test_data = generate_batch(ntest, img_height, img_width)
+end
+
+# ╔═╡ 0622c381-faba-4c60-a556-78d0c90cbc64
+begin
+	nepoch = 60
+	trained_state, test_accuracy, batch_loss_list =
+		train_model(model, opt, train_data, test_data, nepoch)
+end
+
+# ╔═╡ 0c90e26c-e00d-44b1-b692-cde77c294302
+let
+	p1 = plot(test_accuracy,
+			xlabel="Epoch",
+			ylabel="Test accuracy",
+			legend=false
+	)
+	p2 = plot(batch_loss_list,
+			xlabel="Epoch",
+			ylabel="Training loss",
+			legend=false
+	)
+	plot(p1, p2, layout=(2, 1))
+end
+
+# ╔═╡ 2eff527d-897d-4606-874f-7b5e645e4c23
+begin
+	test_range = 0:5
+	niters = 20
+
+	accuracy_matrix = [mean(test_i_j(trained_state, model, i, j) for _ in 1:niters)
+		               for i in test_range, j in test_range]
+	p1 = heatmap(test_range, test_range, accuracy_matrix, colorbar_title="Accuracy")
+	xaxis!("# blobs left")
+	yaxis!("# blobs right")
+end
+
 # ╔═╡ 12b07d79-f13a-42a9-8dc4-12422d760a7e
 function get_title(label)
 	if label == 1
@@ -518,6 +490,34 @@ function get_title(label)
 	else
 		"Left has more blobs"
 	end
+end
+
+# ╔═╡ a240ddb8-7b7e-4cb9-a58b-837ea7232afb
+let
+	go_
+    sample = generate_example(img_height, img_width,
+		                      (blobs_left_, blobs_right_),
+		                       shape=shape_, scale=scale_)
+	img = hcat(sample[:, :, 1], ones(img_height, 1)*NaN, sample[:, :, 2])
+
+	prediction = Lux.apply(trained_state.model,
+		                   reshape(sample, (img_height, img_width, 2, 1)),
+		                   trained_state.parameters, trained_state.states)[1]
+
+	model_label = onecold(prediction, [-1 0 1])[1]
+	
+	p = heatmap(img,  ratio=1)
+
+	data_label = sign(blobs_right_ - blobs_left_)
+	is_correct = model_label == data_label
+	text_color = is_correct ? "green" : "red"
+	@htl("""
+	$(p)
+	<br>
+	<b style="color:$(text_color);font-size:2.1em">
+	Model $(is_correct ? "correctly" : "incorrectly") predicts "$(get_title(model_label) |> lowercase)"
+	</b>
+	""")
 end
 
 # ╔═╡ 07ca44b6-d8b8-463b-8374-e28af9a50738
@@ -617,7 +617,7 @@ ProgressLogging = "~0.1.4"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.2"
+julia_version = "1.9.4"
 manifest_format = "2.0"
 project_hash = "d5e3df9f75e4d7c97c37ff583d6749d72c98bf34"
 
@@ -1331,12 +1331,12 @@ uuid = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
-version = "0.6.3"
+version = "0.6.4"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
-version = "7.84.0+0"
+version = "8.4.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -1345,7 +1345,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
-version = "1.10.2+0"
+version = "1.11.0+1"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -2454,7 +2454,7 @@ version = "1.1.6+0"
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
-version = "1.48.0+0"
+version = "1.52.0+1"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
