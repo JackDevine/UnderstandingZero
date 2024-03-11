@@ -53,6 +53,9 @@ In this notebook, I train a neural network to predict which of two images has le
 Thinking about the training process and results broadened my perspective on what "training a neural network" means. The samples where one image has zero blobs come from a very different distribution than the training distribution. However, the model is able to make the correct prediction. Training the neural network on data gives it numerical intuition. Even though the models task is to label data, it has obtained the ability to understand numbers. 
 """
 
+# ╔═╡ 0dc6ffd6-f33d-4bea-bb38-ba6f60f81948
+
+
 # ╔═╡ f60e0e23-e304-4fa7-813d-c9be87e33f9e
 TableOfContents()
 
@@ -2486,6 +2489,7 @@ PLUTO_CONDAPKG_TOML_CONTENTS = """
 
 # ╔═╡ Cell order:
 # ╟─730e3bd1-47af-4588-b5bd-a7c5212d7a07
+# ╠═0dc6ffd6-f33d-4bea-bb38-ba6f60f81948
 # ╟─f60e0e23-e304-4fa7-813d-c9be87e33f9e
 # ╠═aab65a5a-7633-11ee-22b9-0fd54ecd9118
 # ╟─c266f191-408a-4c7d-b094-69318eadb8d9
